@@ -30,10 +30,12 @@ function updateElectronApp(opts = {}) {
         opts.logger ? opts.logger.log(message) : console.log(message);
         return;
     }
+    return new Promise(function(resolve){
     if (safeOpts.electron.app.isReady())
-        initUpdater(safeOpts);
+        resolve(initUpdater(safeOpts));
     else
-        electron_1.app.on('ready', () => initUpdater(safeOpts));
+        electron_1.app.on('ready', () => resolve(initUpdater(safeOpts)));
+    })
 }
 exports.updateElectronApp = updateElectronApp;
 function initUpdater(opts) {
@@ -105,6 +107,8 @@ function initUpdater(opts) {
     setInterval(() => {
         autoUpdater.checkForUpdates();
     }, (0, ms_1.default)(updateInterval));
+
+    return autoUpdater;
 }
 function guessRepo(electron) {
     var _a;
